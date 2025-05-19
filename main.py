@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query
 import requests
-from typing import Optional
 
 app = FastAPI(
     title="HTTP/HTTPS Checker API",
@@ -15,7 +14,7 @@ def check(target: str = Query(..., description="Domain to check (e.g., example.c
     if "." not in target or " " in target:
         raise HTTPException(status_code=400, detail="Bad Request")
 
-    def get_status(scheme: str) -> Optional[int]:
+    def get_status(scheme):
         try:
             response = requests.get(f"{scheme}://{target}", timeout=timeout)
             return response.status_code
