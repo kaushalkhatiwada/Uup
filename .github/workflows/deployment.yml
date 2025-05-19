@@ -1,0 +1,23 @@
+name: Deploy from DockerHub
+
+on:
+  push:
+    branches: [main]  # or use a deploy branch like "release"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: SSH into server and deploy container
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_SSH_PORT }}
+        script: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.CONTAINER_NAME }}:latest
+          docker stop ${{ secrets.CONTAINER_NAME }} || true
+          docker rm ${{ secrets.CONTAINER_NAME }} || true
+          docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 8000:8000 ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:latest
