@@ -10,7 +10,6 @@ A FastAPI-based service that checks HTTP and HTTPS status for given domains. Thi
 - Docker support for easy deployment
 - Automated testing and CI/CD pipeline
 
-
 ## Installation
 
 ### Local Development
@@ -32,12 +31,44 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Docker Deployment
+## Deployment
 
-Build and run using Docker:
+### Automated Deployment (CI/CD)
+
+The project uses GitHub Actions for automated deployment with two workflows:
+
+1. **Docker Image Build and Push**
+   - Triggered on push to main branch
+   - Builds Docker image
+   - Pushes to DockerHub
+
+2. **Server Deployment**
+   - Triggered after successful Docker image build
+   - Deploys the container to the target server
+   - Uses SSH for secure deployment
+   - Automatically updates the running container
+
+Required GitHub Secrets:
+- `DOCKERHUB_USERNAME`: Your DockerHub username
+- `DOCKERHUB_TOKEN`: Your DockerHub access token
+- `SERVER_HOST`: Target server hostname/IP
+- `SERVER_USER`: SSH username
+- `SERVER_SSH_KEY`: SSH private key
+- `SERVER_SSH_PORT`: SSH port (default: 22)
+- `CONTAINER_NAME`: Name for the Docker container
+- `HOST_PORT`: Port to expose on the host
+- `CONTAINER_PORT`: Port exposed by the container (default: 8000)
+
+### Manual Deployment
+
+1. Build the Docker image:
 ```bash
 docker build -t uup .
-docker run -p 8000:8000 uup
+```
+
+2. Run the container:
+```bash
+docker run -d -p 8000:8000 uup
 ```
 
 ## Usage
@@ -80,18 +111,5 @@ Example response:
 
 - Swagger UI: `http://localhost:8000/docs`
 
-## Development
 
-### Running Tests
-
-```bash
-pytest test_main.py -v
-```
-
-### CI/CD Pipeline
-
-The project includes a GitHub Actions workflow that:
-1. Runs tests on every push and pull request
-2. Builds and pushes Docker images to DockerHub Registry on:
-   - Push to main branch
 
