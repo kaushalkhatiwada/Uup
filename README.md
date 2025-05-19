@@ -1,4 +1,4 @@
-#Uup - You up?
+# Uup - You up?
 
 A FastAPI-based service that checks HTTP and HTTPS status for given domains. This service helps you verify the availability and status of websites over both HTTP and HTTPS protocols.
 
